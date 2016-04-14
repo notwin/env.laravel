@@ -3,6 +3,7 @@
 cd ~/workspace
 composer create-project laravel/laravel la dev-master
 mv la/* ./
+rm -rf la
 chmod -R 0777 ./storage
 mv ./env.laravel/laravel.env ./.env
 mysql -uroot -proot -e"create database laravel_db;" 
