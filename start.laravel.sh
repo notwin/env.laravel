@@ -8,6 +8,7 @@ mv ./env.laravel/laravel.env ./.env
 mysql -uroot -proot -e"create database october;" 
 php artisan key:generate
 ln -s -b  ~/workspace/public /var/www/html
-service apache2 restart
 
+sudo php5enmod mcrypt
+sudo service apache2 restart
 
