@@ -1,0 +1,63 @@
+# Here is your stack preview
+# You can make advanced changes like modifying your VM,
+# installing packages, and running shell commands.
+
+provider:
+  aws:
+    access_key: '${var.aws_access_key}'
+    secret_key: '${var.aws_secret_key}'
+resource:
+  aws_instance:
+    laravel:
+      instance_type: t2.micro
+      ami: ''
+      tags:
+        Name: '${var.koding_user_username}-${var.koding_group_slug}'
+      user_data: |-
+        export USER_NAME=${var.koding_user_username}
+        export USER_HOME=/home/${var.koding_user_username}
+        apt-get update -y
+        apt-get -yq install \
+            curl \
+            git \
+            apache2 \
+            libapache2-mod-php5 \
+            php5-mysql \
+            php5-mcrypt \
+            php5-gd \
+            php5-curl \
+            php-pear \
+            php-apc
+
+        curl -sS https://getcomposer.org/installer |sudo php -- --install-dir=/usr/local/bin --filename=composer
+        /usr/sbin/php5enmod mcrypt
+        echo "========================================================================"
+        echo "PHP安装完成！！"
+        echo "========================================================================"
+        echo "ServerName localhost" >> /etc/apache2/apache2.conf
+        sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
+        mkdir -p /$USER_HOME/workspace && rm -fr /var/www/html && ln -s  /$USER_HOME/workspace /var/www/html
+        sed -i "s/AllowOverride None/AllowOverride All/g" /etc/apache2/apache2.conf
+        sed -i "s/www-data/$USER_NAME/g" /etc/apache2/envvars
+        chown $USER_NAME:$USER_NAME /$USER_HOME/workspace -R
+        a2enmod rewrite
+        source /etc/apache2/envvars
+        tail -F /var/log/apache2/* &
+        service apache2 start
+        
+        echo "mysql-server-5.6 mysql-server/root_password password root" | sudo debconf-set-selections
+        echo "mysql-server-5.6 mysql-server/root_password_again password root" | sudo debconf-set-selections
+        sudo apt-get -y install mysql-server-5.6
+        
+        sudo dd if=/dev/zero of=/swapfile bs=1024 count=512k
+        mkswap /swapfile
+        swapon /swapfile
+        
+        cd $USER_HOME/workspace
+        su $USER_NAME -c 'git clone https://github.com/notwin/env.laravel.git'
+        
+
+        
+        
+        
+
