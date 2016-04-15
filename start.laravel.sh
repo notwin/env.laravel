@@ -14,3 +14,10 @@ sudo ln -s ~/workspace/public /var/www/html
 sudo php5enmod mcrypt
 sudo service apache2 restart
 
+git config --global user.email "$(whoami)@gmail.com"
+git config user.name "$(whoami)" 
+
+git init 
+mv ./env.laravel/laravel.gitignore ./.gitignore
+git add . 
+git commit -a -m 'init'
