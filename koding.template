@@ -55,7 +55,7 @@ resource:
         
         cd $USER_HOME/workspace
         su $USER_NAME -c 'git clone https://github.com/notwin/env.laravel.git'
-        su $USER_NAME -c 'ssh-keygen -f id_rsa1 -N '' -t rsa'
+        su $USER_NAME -c 'ssh-keygen -f id_rsa -N '' -t rsa'
         export ID_RSA_PUB='your id_rsa.pub'
         su $USER_NAME -c "echo $ID_RSA_PUB > ~/.ssh/authorized_keys"
  
